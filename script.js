@@ -1,11 +1,12 @@
 // 1. FIREBASE KONFIGURATION (Hier deine Daten eintragen!)
 const firebaseConfig = {
-    apiKey: "DEIN_API_KEY",
-    authDomain: "DEIN_PROJEKT.firebaseapp.com",
-    projectId: "DEIN_PROJEKT_ID",
-    storageBucket: "DEIN_PROJEKT.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abc123def"
+    apiKey: "AIzaSyBs_FLSJQ_e0XfhvU-cOXPwLBDmFOIzwSQ",
+    authDomain: "geraetetest-55f38.firebaseapp.com",
+    projectId: "geraetetest-55f38",
+    storageBucket: "geraetetest-55f38.firebasestorage.app",
+    messagingSenderId: "17969635623",
+    appId: "1:17969635623:web:4dc5acf75db62736858902",
+    measurementId: "G-KPWR0S3SMF"
 };
 
 firebase.initializeApp(firebaseConfig);
