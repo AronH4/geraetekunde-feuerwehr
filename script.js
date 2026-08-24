@@ -40,6 +40,19 @@ let errorCount = 0;
 let deviceAttempts = 0;
 let startTime = 0;
 let activeHighlightDev = null;
+let feedbackTimeout = null;
+
+// Event-Listener: Klick auf Freiflächen des Bildes (Kein Gerät getroffen)
+document.addEventListener("DOMContentLoaded", () => {
+    const imgElement = document.getElementById("vehicle-img");
+    if (imgElement) {
+        imgElement.addEventListener("click", (e) => {
+            if (mode === "test") {
+                handleMissClick();
+            }
+        });
+    }
+});
 
 function showStartScreen() {
     document.getElementById("start-screen").classList.remove("hidden");
@@ -60,7 +73,7 @@ function startTest() {
     document.getElementById("birdseye-container").classList.remove("hidden");
     document.getElementById("overview-grid").classList.add("hidden");
     document.getElementById("info-box").classList.add("hidden");
-    document.getElementById("correct-feedback").classList.add("hidden");
+    hideFeedbacks();
     
     updateStats();
     startTime = Date.now();
@@ -104,9 +117,9 @@ function startOverview() {
     document.getElementById("result-screen").classList.add("hidden");
     document.getElementById("main-screen").classList.remove("hidden");
     document.getElementById("quiz-info").classList.add("hidden");
-    document.getElementById("birdseye-container").classList.add("hidden"); // Vogelperspektive im Übersichtsmode ausblenden
+    document.getElementById("birdseye-container").classList.add("hidden");
     document.getElementById("overview-grid").classList.remove("hidden");
-    document.getElementById("correct-feedback").classList.add("hidden");
+    hideFeedbacks();
     
     renderOverviewGrid();
     switchView("fahrerseite");
@@ -133,15 +146,16 @@ function selectOverviewDevice(dev, btnElement) {
 
     activeHighlightDev = dev;
 
-    // Wechselt Bild ODER hebt direkt hervor, ohne doppeltes Klicken
     if (currentSide !== dev.side) {
-        switchView(dev.side);
+        switchView(dev.side, () => {
+            highlightDevice(dev);
+        });
     } else {
         highlightDevice(dev);
     }
 }
 
-function switchView(side) {
+function switchView(side, callback) {
     currentSide = side;
     const img = document.getElementById("vehicle-img");
     document.getElementById("view-title").innerText = side.toUpperCase();
@@ -153,6 +167,7 @@ function switchView(side) {
         if (activeHighlightDev && activeHighlightDev.side === currentSide) {
             highlightDevice(activeHighlightDev);
         }
+        if (callback) callback();
     };
 
     img.onload = updateViewContent;
@@ -194,7 +209,10 @@ function buildMap() {
         area.shape = "rect";
         area.coords = `${x1},${y1},${x2},${y2}`;
         area.href = "javascript:void(0);";
-        area.onclick = () => handleAreaClick(dev);
+        area.onclick = (e) => {
+            e.stopPropagation(); // Verhindert Klick auf das Freiflächen-Bild
+            handleAreaClick(dev);
+        };
         map.appendChild(area);
     });
 }
@@ -220,23 +238,10 @@ function handleAreaClick(clickedDev) {
         if (isCorrectArea) {
             foundCount++;
             updateStats();
-            
-            // Kein Alert / Popup bei Richtig, sondern direktes Feedback
-            showCorrectFeedback();
+            showFeedback("correct", "Richtig!");
             nextTestDevice();
         } else {
-            errorCount++;
-            deviceAttempts++;
-            updateStats();
-            
-            if (deviceAttempts < 2) {
-                // Erster Fehler: Pop-Up
-                alert("Falsch! Du hast noch 1 Versuch.");
-            } else {
-                // Zweiter Fehler: Pop-Up mit Position und sofort das nächste Gerät
-                alert(`Leider falsch. Das gesuchte Gerät befindet sich hier: ${currentTarget.text}`);
-                nextTestDevice();
-            }
+            registerError();
         }
     } else if (mode === "overview") {
         const infoBox = document.getElementById("info-box");
@@ -247,12 +252,39 @@ function handleAreaClick(clickedDev) {
     }
 }
 
-function showCorrectFeedback() {
-    const fb = document.getElementById("correct-feedback");
+// Klick ins Leere (kein Gerät getroffen)
+function handleMissClick() {
+    registerError();
+}
+
+function registerError() {
+    errorCount++;
+    deviceAttempts++;
+    updateStats();
+    
+    if (deviceAttempts < 2) {
+        showFeedback("wrong", "Falsch! Du hast noch 1 Versuch.");
+    } else {
+        showFeedback("wrong", `Falsch! Position: ${currentTarget.text}`, 4500);
+        setTimeout(nextTestDevice, 2000);
+    }
+}
+
+function showFeedback(type, text, duration = 1500) {
+    hideFeedbacks();
+    const fb = document.getElementById(type === "correct" ? "correct-feedback" : "wrong-feedback");
+    fb.innerText = text;
     fb.classList.remove("hidden");
-    setTimeout(() => {
+    
+    if (feedbackTimeout) clearTimeout(feedbackTimeout);
+    feedbackTimeout = setTimeout(() => {
         fb.classList.add("hidden");
-    }, 1000);
+    }, duration);
+}
+
+function hideFeedbacks() {
+    document.getElementById("correct-feedback").classList.add("hidden");
+    document.getElementById("wrong-feedback").classList.add("hidden");
 }
 
 function highlightDevice(dev) {
