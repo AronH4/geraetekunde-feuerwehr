@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerätekunde Feuerwehr</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Startbildschirm -->
+        <div id="start-screen" class="card">
+            <h1>Gerätekunde Lernhilfe</h1>
+            <p>Wähle einen Modus, um zu starten:</p>
+            <div class="menu-buttons">
+                <button onclick="startTest()">Test-Modus</button>
+                <button onclick="startOverview()">Übersicht</button>
+            </div>
+        </div>
+
+        <!-- Hauptansicht -->
+        <div id="main-screen" class="hidden">
+            <header>
+                <button class="small-btn" onclick="showStartScreen()">← Hauptmenü</button>
+                <div id="quiz-info" class="hidden">
+                    <span id="target-device-display">Gesucht: <strong id="target-device-name">---</strong></span>
+                    <span id="stats-display">Gefunden: <span id="found-count">0</span>/30 | Fehler: <span id="error-count">0</span></span>
+                </div>
+            </header>
+
+            <div class="content-container">
+                <!-- Vogelperspektive mit 4 Richtungsbuttons -->
+                <div class="birdseye-wrapper">
+                    <img src="img/vogelperspektive.png" alt="Vogelperspektive Fahrzeug" id="birdseye-img">
+                    <button class="nav-btn btn-top" onclick="switchView('mannschaftskabine')">Kabine (Vorne)</button>
+                    <button class="nav-btn btn-left" onclick="switchView('fahrerseite')">Fahrerseite (Links)</button>
+                    <button class="nav-btn btn-right" onclick="switchView('beifahrerseite')">Beifahrerseite (Rechts)</button>
+                    <button class="nav-btn btn-bottom" onclick="switchView('heck')">Heck (Hinten)</button>
+                </div>
+
+                <!-- Hauptbereich -->
+                <div class="view-wrapper">
+                    <div id="view-title">Fahrzeugseite auswählen</div>
+                    <div id="image-container" class="image-container">
+                        <img id="vehicle-img" src="" usemap="#vehicle-map" alt="Fahrzeugansicht">
+                        <map name="vehicle-map" id="vehicle-map"></map>
+                        <div id="highlight-overlay"></div>
+                    </div>
+                    <div id="info-box" class="info-box hidden"></div>
+                </div>
+            </div>
+
+            <!-- Übersichts-Raster -->
+            <div id="overview-grid" class="overview-grid hidden"></div>
+        </div>
+
+        <!-- Auswertung -->
+        <div id="result-screen" class="card hidden">
+            <h2>Test Abgeschlossen!</h2>
+            <div class="result-stats">
+                <p>Gefundene Geräte: <strong id="res-found"></strong> / 30</p>
+                <p>Fehler gesamt: <strong id="res-errors"></strong></p>
+                <p>Benötigte Zeit: <strong id="res-time"></strong></p>
+            </div>
+            <button onclick="startTest()">Erneut testen</button>
+            <button onclick="showStartScreen()">Hauptmenü</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/image-map-resizer/1.0.10/js/imageMapResizer.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
