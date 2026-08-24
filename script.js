@@ -40,7 +40,7 @@ const devices = [
     { id: 21, name: "Übergangsstück B-C", side: "beifahrerseite", text: "Beifahrerseite | hinten | oberhalb vom Verteiler", coords: "568,1205,455,1149" },
     { id: 22, name: "Verbandskasten", side: "mannschaftskabine", text: "Mannschaftskabine | an der Rückwand", coords: "1791,741,1961,1121" },
     { id: 23, name: "Brechstange (Halligan Tool)", side: "fahrerseite", text: "Fahrerseite | vorne | mittig links", coords: "389,711,248,577" },
-    { id: 24, name: "Feuerwehraxt", side: "fahrerseite", text: "Fahrerseite | vorne | unten links", coords: "390,1118,251,948" },
+    { id: 24, name: "Feuerwehraxt", side: "fahrerseite", text: "Fahrerseite | hinten | links neben den Strahlrohren", coords: "1384,713,1229,465" },
     { id: 25, name: "Reservekraftstoffkanister", side: "fahrerseite", text: "Fahrerseite | hinten | mittig oben", coords: "1589,476,1486,302" },
     { id: 26, name: "Unterlegkeil", side: "mannschaftskabine", text: "Fahrerkabine | unter dem Fahrersitz", coords: "446,1032,685,1219" },
     { id: 27, name: "Werkzeugkasten", side: "beifahrerseite", text: "Beifahrerseite | vorne | oben neben den Schläuchen", coords: "1442,663,1287,469" },
