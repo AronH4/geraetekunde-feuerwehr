@@ -41,13 +41,13 @@ let deviceAttempts = 0;
 let startTime = 0;
 let activeHighlightDev = null;
 let feedbackTimeout = null;
+let isWaitingForOk = false;
 
-// Event-Listener: Klick auf Freiflächen des Bildes (Kein Gerät getroffen)
 document.addEventListener("DOMContentLoaded", () => {
     const imgElement = document.getElementById("vehicle-img");
     if (imgElement) {
-        imgElement.addEventListener("click", (e) => {
-            if (mode === "test") {
+        imgElement.addEventListener("click", () => {
+            if (mode === "test" && !isWaitingForOk) {
                 handleMissClick();
             }
         });
@@ -73,8 +73,9 @@ function startTest() {
     document.getElementById("birdseye-container").classList.remove("hidden");
     document.getElementById("overview-grid").classList.add("hidden");
     document.getElementById("info-box").classList.add("hidden");
-    hideFeedbacks();
+    document.getElementById("next-step-container").classList.add("hidden");
     
+    hideFeedbacks();
     updateStats();
     startTime = Date.now();
     switchView('fahrerseite');
@@ -82,6 +83,9 @@ function startTest() {
 }
 
 function nextTestDevice() {
+    isWaitingForOk = false;
+    document.getElementById("next-step-container").classList.add("hidden");
+
     if (currentQueue.length === 0) {
         finishTest();
         return;
@@ -119,6 +123,7 @@ function startOverview() {
     document.getElementById("quiz-info").classList.add("hidden");
     document.getElementById("birdseye-container").classList.add("hidden");
     document.getElementById("overview-grid").classList.remove("hidden");
+    document.getElementById("next-step-container").classList.add("hidden");
     hideFeedbacks();
     
     renderOverviewGrid();
@@ -210,8 +215,10 @@ function buildMap() {
         area.coords = `${x1},${y1},${x2},${y2}`;
         area.href = "javascript:void(0);";
         area.onclick = (e) => {
-            e.stopPropagation(); // Verhindert Klick auf das Freiflächen-Bild
-            handleAreaClick(dev);
+            e.stopPropagation();
+            if (!isWaitingForOk) {
+                handleAreaClick(dev);
+            }
         };
         map.appendChild(area);
     });
@@ -238,8 +245,8 @@ function handleAreaClick(clickedDev) {
         if (isCorrectArea) {
             foundCount++;
             updateStats();
-            showFeedback("correct", "Richtig!");
-            nextTestDevice();
+            showFeedback("correct", "Richtig!", 1500);
+            setTimeout(nextTestDevice, 1000);
         } else {
             registerError();
         }
@@ -252,7 +259,6 @@ function handleAreaClick(clickedDev) {
     }
 }
 
-// Klick ins Leere (kein Gerät getroffen)
 function handleMissClick() {
     registerError();
 }
@@ -263,11 +269,29 @@ function registerError() {
     updateStats();
     
     if (deviceAttempts < 2) {
-        showFeedback("wrong", "Falsch! Du hast noch 1 Versuch.");
+        showFeedback("wrong", "Falsch! Du hast noch 1 Versuch.", 2000);
     } else {
-        showFeedback("wrong", `Falsch! Position: ${currentTarget.text}`, 4500);
-        setTimeout(nextTestDevice, 2000);
+        isWaitingForOk = true;
+        showFeedback("wrong", `Falsch! Lösung: ${currentTarget.text}`, 999999);
+        
+        // Zur richtigen Fahrzeugseite wechseln & blinken lassen
+        activeHighlightDev = currentTarget;
+        if (currentSide !== currentTarget.side) {
+            switchView(currentTarget.side, () => {
+                highlightDevice(currentTarget);
+            });
+        } else {
+            highlightDevice(currentTarget);
+        }
+        
+        // OK-Button einblenden
+        document.getElementById("next-step-container").classList.remove("hidden");
     }
+}
+
+function confirmNextDevice() {
+    hideFeedbacks();
+    nextTestDevice();
 }
 
 function showFeedback(type, text, duration = 1500) {
@@ -277,9 +301,11 @@ function showFeedback(type, text, duration = 1500) {
     fb.classList.remove("hidden");
     
     if (feedbackTimeout) clearTimeout(feedbackTimeout);
-    feedbackTimeout = setTimeout(() => {
-        fb.classList.add("hidden");
-    }, duration);
+    if (duration < 90000) {
+        feedbackTimeout = setTimeout(() => {
+            fb.classList.add("hidden");
+        }, duration);
+    }
 }
 
 function hideFeedbacks() {
