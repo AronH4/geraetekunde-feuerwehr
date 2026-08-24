@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerätekunde Leistungsprüfung</title>
-    <!-- Favicon Integration (Pfade anpassen falls notwendig) -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -33,30 +32,33 @@
             </header>
 
             <div class="content-container">
-                <!-- Vogelperspektive Navigation (Wird im Übersichtsmode ausgeblendet) -->
+                <!-- Vogelperspektive Navigation -->
                 <div id="birdseye-container" class="birdseye-wrapper">
-    <button class="nav-btn btn-kabine" onclick="switchView('mannschaftskabine')" title="Mannschaftskabine"></button>
-    <button class="nav-btn btn-fahrerseite" onclick="switchView('fahrerseite')" title="Fahrerseite"></button>
-    <button class="nav-btn btn-beifahrerseite" onclick="switchView('beifahrerseite')" title="Beifahrerseite"></button>
-    <button class="nav-btn btn-heck" onclick="switchView('heck')" title="Heck"></button>
-    <img id="birdseye-img" src="./img/vogelperspektive.png" alt="Vogelperspektive">
-</div>
+                    <button class="nav-btn btn-kabine" onclick="switchView('mannschaftskabine')" title="Mannschaftskabine"></button>
+                    <button class="nav-btn btn-fahrerseite" onclick="switchView('fahrerseite')" title="Fahrerseite"></button>
+                    <button class="nav-btn btn-beifahrerseite" onclick="switchView('beifahrerseite')" title="Beifahrerseite"></button>
+                    <button class="nav-btn btn-heck" onclick="switchView('heck')" title="Heck"></button>
+                    <img id="birdseye-img" src="./img/vogelperspektive.png" alt="Vogelperspektive">
+                </div>
 
-                <!-- Hauptbereich Bild & Übersicht -->
+                <!-- Hauptbereich Bild -->
                 <div class="view-wrapper">
                     <h2 id="view-title">FAHRERSEITE</h2>
-                    <div class="image-container">
+                    <div class="image-container" id="image-container">
                         <img id="vehicle-img" src="./img/fahrerseite.jpeg" usemap="#vehicle-map" alt="Fahrzeugansicht">
                         <map name="vehicle-map" id="vehicle-map"></map>
                         <div id="highlight-overlay"></div>
                     </div>
-                    <!-- Feedback "Richtig" direkt über der Infobox -->
+                    
+                    <!-- Feedback-Leisten (Richtig / Falsch) -->
                     <div id="correct-feedback" class="feedback-correct hidden">Richtig!</div>
+                    <div id="wrong-feedback" class="feedback-wrong hidden"></div>
+                    
                     <div id="info-box" class="info-box hidden"></div>
                 </div>
 
-                <!-- Raster mit den 30 Buttons rechts im Übersichts-Modus -->
-                <div id="overview-grid" class="overview-grid hidden"></div>
+                <!-- Raster mit 30 Buttons im Übersichts-Modus -->
+                <div id="overview-grid" class="overview-grid hidden" lang="de"></div>
             </div>
         </div>
 
