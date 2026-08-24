@@ -21,7 +21,7 @@ const devices = [
     { id: 2, name: "C-Strahlrohr", side: "fahrerseite", text: "Fahrerseite | hinten | mittig", coords: "1686,655,1394,478" },
     { id: 3, name: "Druckbegrenzungsventil", side: "heck", text: "Heck | in der Maschinistenkiste", coords: "608,73,1354,487" },
     { id: 4, name: "Feuerlöscher", side: "beifahrerseite", text: "Beifahrerseite | vorne | hinter der Kübelspritze", coords: "1419,1205,1266,810" },
-    { id: 5, name: "Feuerwehrleine", side: "mannschaftskabine", text: "Mannschaftskabine | bei den AGT-sitzen", coords: "1020,631,1285,1136" },
+    { id: 5, name: "Feuerwehrleine", side: "mannschaftskabine", text: "Mannschaftskabine | bei den AGT-Sitzen", coords: "1020,631,1285,1136" },
     { id: 6, name: "Handscheinwerfer", side: "mannschaftskabine", text: "Fahrerkabine | zwischen den Sitzen", coords: "737,643,911,777" },
     { id: 7, name: "Kübelspritze", side: "beifahrerseite", text: "Beifahrerseite | vorne | mittig unten", coords: "1459,1203,1305,762" },
     { id: 8, name: "Kupplungsschlüssel", side: "heck", text: "Heck | in der Maschinistenkiste", coords: "608,73,1354,487" },
