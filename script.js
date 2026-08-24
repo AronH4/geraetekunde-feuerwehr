@@ -1,4 +1,4 @@
-// 1. FIREBASE KONFIGURATION (Hier deine Daten eintragen!)
+// 1. FIREBASE KONFIGURATION
 const firebaseConfig = {
     apiKey: "AIzaSyBs_FLSJQ_e0XfhvU-cOXPwLBDmFOIzwSQ",
     authDomain: "geraetetest-55f38.firebaseapp.com",
@@ -80,8 +80,26 @@ function showStartScreen() {
     document.getElementById("main-screen").classList.add("hidden");
     document.getElementById("result-screen").classList.add("hidden");
     document.getElementById("highscore-screen").classList.add("hidden");
+    
+    // Test-Start-Overlay zurücksetzen
+    const testPrep = document.getElementById("test-prep-box");
+    if (testPrep) testPrep.classList.remove("hidden");
 }
 
+// 1. ZWISCHENSEITE: Zeigt die Start-Box
+function openTestPrep() {
+    showStartScreen();
+    // Falls du in der HTML ein Element #test-prep-box hast, kannst du es hier anzeigen lassen
+    const prepBox = document.getElementById("test-prep-box");
+    if (prepBox) {
+        prepBox.classList.remove("hidden");
+    } else {
+        // Fallback: Direkter Start, falls das HTML noch kein Prep-Box Element hat
+        startTest();
+    }
+}
+
+// 2. TATSÄCHLICHER TEST-START (nach Klick auf "Test starten")
 function startTest() {
     mode = "test";
     foundCount = 0;
@@ -126,9 +144,11 @@ function finishTest() {
     const min = Math.floor(finalDurationSec / 60);
     const sec = finalDurationSec % 60;
     
-    // Score-Berechnung: Zeit + 5s je Fehler + 5s je nicht gefundenem Gerät
+    // SCHNELLER & WENIGER FEHLER = HOCH SCORE
+    // Start mit 10.000 Punkten - 10 Punkte pro Sekunde - 200 Punkte pro Fehler/Nicht-Gefunden
     const unassignedCount = totalDevicesCount - foundCount;
-    finalScore = finalDurationSec + (errorCount * 5) + (unassignedCount * 5);
+    finalScore = 10000 - (finalDurationSec * 10) - (errorCount * 200) - (unassignedCount * 500);
+    if (finalScore < 0) finalScore = 0;
 
     document.getElementById("main-screen").classList.add("hidden");
     document.getElementById("result-screen").classList.remove("hidden");
@@ -182,8 +202,9 @@ function showHighscoreScreen() {
 }
 
 function loadHighscoresLive() {
+    // Sortiert absteigend (desc), sodass der HÖCHSTE Score oben auf Platz #1 steht
     db.collection("highscores")
-      .orderBy("score", "asc")
+      .orderBy("score", "desc")
       .limit(20)
       .onSnapshot(snapshot => {
           const tbody = document.getElementById("highscore-body");
