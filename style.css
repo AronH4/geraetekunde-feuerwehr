@@ -63,6 +63,7 @@ button:active {
     font-size: 0.9rem; 
 }
 
+/* Header & Abgrenzung des gesuchten Geräts */
 header {
     display: flex;
     justify-content: space-between;
@@ -75,15 +76,41 @@ header {
 
 #quiz-info { 
     display: flex; 
+    align-items: center;
     gap: 15px; 
     font-size: 1rem; 
     flex-wrap: wrap;
 }
 
-#target-device-name { 
-    color: #ff4d4d; 
-    font-size: 1.2rem; 
+.stat-badge {
+    background: #262626;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.target-box {
+    background: #2b080c;
+    border: 2px solid #ff4d4d;
+    padding: 8px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
+}
+
+.target-label {
+    color: #ff8888;
+    font-size: 0.85rem;
     font-weight: bold;
+    letter-spacing: 1px;
+}
+
+#target-device-name { 
+    color: #ffffff; 
+    font-size: 1.4rem; 
+    font-weight: 800;
 }
 
 .content-container {
@@ -164,7 +191,7 @@ header {
     background: #000;
     border-radius: 8px;
     overflow: hidden;
-    cursor: crosshair;
+    cursor: crosshair !important;
 }
 
 .image-container img {
@@ -172,10 +199,11 @@ header {
     height: auto;
     display: block;
     user-select: none;
+    cursor: crosshair !important;
 }
 
 map area {
-    cursor: pointer;
+    cursor: crosshair !important;
     outline: none;
 }
 
@@ -219,6 +247,21 @@ map area {
     font-size: 1.1rem;
 }
 
+#ok-btn {
+    background-color: #ffea00;
+    color: #000;
+    font-size: 1.1rem;
+    padding: 10px 30px;
+    border-radius: 6px;
+    font-weight: 800;
+    box-shadow: 0 0 12px rgba(255, 234, 0, 0.5);
+}
+
+#ok-btn:hover {
+    background-color: #fff066;
+    transform: scale(1.03);
+}
+
 .info-box {
     background: #222;
     border-left: 4px solid #ff4d4d;
@@ -253,7 +296,6 @@ map area {
     font-size: clamp(0.65rem, 0.9vw, 0.8rem);
     line-height: 1.15;
     
-    /* Automatische deutsche Silbentrennung */
     hyphens: auto;
     -webkit-hyphens: auto;
     -ms-hyphens: auto;
@@ -274,7 +316,7 @@ map area {
     box-shadow: 0 0 8px rgba(255, 77, 77, 0.6);
 }
 
-/* Mobil-Optimierung für kleine Displays */
+/* Mobil-Optimierung */
 @media (max-width: 768px) {
     body {
         padding: 5px;
@@ -289,8 +331,12 @@ map area {
         gap: 8px;
     }
     
+    .target-box {
+        padding: 4px 10px;
+    }
+
     #target-device-name {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 
     .content-container {
