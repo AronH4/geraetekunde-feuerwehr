@@ -61,7 +61,7 @@ function startTest() {
     
     updateStats();
     startTime = Date.now();
-    switchView('fahrerseite'); // Standardmäßig mit der Fahrerseite starten
+    switchView('fahrerseite');
     nextTestDevice();
 }
 
@@ -134,7 +134,13 @@ function selectOverviewDevice(dev, btnElement) {
 function switchView(side) {
     currentSide = side;
     const img = document.getElementById("vehicle-img");
-    img.src = `./img/${side}.jpg`;
+    
+    // Unterscheidung der Dateiendungen je nach Bild
+    if (side === "mannschaftskabine") {
+        img.src = `./img/${side}.jpg`;
+    } else {
+        img.src = `./img/${side}.jpeg`;
+    }
     
     document.getElementById("view-title").innerText = side.toUpperCase();
     hideHighlight();
