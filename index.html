@@ -15,24 +15,24 @@
     <div id="app">
 
         <!-- START SCREEN -->
-        <div id="start-screen" class="card">
-            <h1>Gerätekunde Leistungsprüfung</h1>
-            <p style="margin-bottom: 25px; color: #ccc;">Wähle einen Modus, um zu starten:</p>
-            
-            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                <button onclick="openTestPrep()">Test</button>
-                <button onclick="startOverview()">Übersicht</button>
-            </div>
+<div id="start-screen" class="card">
+    <h1>Gerätekunde Leistungsprüfung</h1>
+    <p style="margin-bottom: 25px; color: #ccc;">Wähle einen Modus, um zu starten:</p>
+    
+    <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+        <button onclick="openTestPrep()">Test</button>
+        <button onclick="startOverview()">Übersicht</button>
+    </div>
 
-            <!-- ZWISCHENSEITE / PREP-BOX (Initial verborgen) -->
-            <div id="test-prep-box" class="hidden" style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #444;">
-                <p style="color: #ffea00; font-weight: bold; margin-bottom: 10px;">Bereit für den Test?</p>
-                <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 15px;">
-                    Die Zeit läuft, sobald du auf "Jetzt starten" klickst. Schnellere Zeiten bringen mehr Punkte!
-                </p>
-                <button onclick="startTest()" style="background-color: #28a745; font-size: 1.1rem; padding: 10px 20px;">Jetzt starten</button>
-            </div>
-        </div>
+    <!-- ZWISCHENSEITE / PREP-BOX (Versteckt mit der Klasse "hidden") -->
+    <div id="test-prep-box" class="hidden" style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #444;">
+        <p style="color: #ffea00; font-weight: bold; margin-bottom: 10px;">Bereit für den Test?</p>
+        <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 15px;">
+            Die Zeit läuft, sobald du auf "Jetzt starten" klickst. Schnellere Zeiten bringen mehr Punkte!
+        </p>
+        <button onclick="startTest()" style="background-color: #28a745; font-size: 1.1rem; padding: 10px 20px;">Jetzt starten</button>
+    </div>
+</div>
 
         <!-- MAIN SCREEN -->
         <div id="main-screen" class="hidden">
