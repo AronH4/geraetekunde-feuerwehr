@@ -367,3 +367,19 @@ map area {
         padding: 2px;
     }
 }
+
+#highscore-table th, #highscore-table td {
+    text-align: center;
+}
+
+#highscore-table tbody tr:nth-child(even) {
+    background-color: #222;
+}
+
+#highscore-table tbody tr:nth-child(odd) {
+    background-color: #1a1a1a;
+}
+
+#player-name:focus {
+    outline: 2px solid #ff4d4d;
+}
