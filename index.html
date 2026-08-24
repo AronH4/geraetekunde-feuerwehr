@@ -6,6 +6,10 @@
     <title>Gerätekunde Leistungsprüfung</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="style.css">
+
+    <!-- 1. FIREBASE SDKs EINBINDEN -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div id="app">
@@ -17,6 +21,7 @@
             <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
                 <button onclick="startTest()">Test</button>
                 <button onclick="startOverview()">Übersicht</button>
+                <button onclick="showHighscoreScreen()">Highscore</button>
             </div>
         </div>
 
@@ -35,7 +40,6 @@
             </header>
 
             <div class="content-container">
-                <!-- Vogelperspektive Navigation -->
                 <div id="birdseye-container" class="birdseye-wrapper">
                     <button class="nav-btn btn-kabine" onclick="switchView('mannschaftskabine')" title="Mannschaftskabine"></button>
                     <button class="nav-btn btn-fahrerseite" onclick="switchView('fahrerseite')" title="Fahrerseite"></button>
@@ -44,7 +48,6 @@
                     <img id="birdseye-img" src="./img/vogelperspektive.png" alt="Vogelperspektive">
                 </div>
 
-                <!-- Hauptbereich Bild -->
                 <div class="view-wrapper">
                     <h2 id="view-title">FAHRERSEITE</h2>
                     <div class="image-container" id="image-container">
@@ -53,11 +56,9 @@
                         <div id="highlight-overlay"></div>
                     </div>
                     
-                    <!-- Feedback-Leisten (Richtig / Falsch) -->
                     <div id="correct-feedback" class="feedback-correct hidden">Richtig!</div>
                     <div id="wrong-feedback" class="feedback-wrong hidden"></div>
                     
-                    <!-- OK-Button nach 2 Fehlversuchen -->
                     <div id="next-step-container" class="hidden" style="margin-top: 10px; text-align: center;">
                         <button id="ok-btn" onclick="confirmNextDevice()">OK (Nächstes Gerät)</button>
                     </div>
@@ -65,18 +66,51 @@
                     <div id="info-box" class="info-box hidden"></div>
                 </div>
 
-                <!-- Raster im Übersichts-Modus -->
                 <div id="overview-grid" class="overview-grid hidden" lang="de"></div>
             </div>
         </div>
 
-        <!-- RESULT SCREEN -->
+        <!-- RESULT SCREEN MIT HIGHSCORE FORMULAR -->
         <div id="result-screen" class="card hidden">
             <h2>Testergebnis</h2>
-            <p style="margin: 15px 0;">Gefunden: <strong id="res-found">0</strong></p>
-            <p style="margin: 15px 0;">Fehler: <strong id="res-errors">0</strong></p>
-            <p style="margin: 15px 0;">Benötigte Zeit: <strong id="res-time">0m 0s</strong></p>
+            <p style="margin: 10px 0;">Gefunden: <strong id="res-found">0</strong></p>
+            <p style="margin: 10px 0;">Fehler: <strong id="res-errors">0</strong></p>
+            <p style="margin: 10px 0;">Benötigte Zeit: <strong id="res-time">0m 0s</strong></p>
+            <p style="margin: 10px 0; color: #ffea00; font-size: 1.2rem;">Berechneter Score: <strong id="res-score">0</strong> Pkt.</p>
+
+            <div id="highscore-form-container" style="margin: 20px 0; padding: 15px; background: #222; border-radius: 8px;">
+                <h3>In globale Highscore-Liste eintragen</h3>
+                <input type="text" id="player-name" placeholder="Dein Name / Kürzel" maxlength="15" style="padding: 8px; font-size: 1rem; border-radius: 4px; border: 1px solid #444; margin-right: 8px;">
+                <button id="save-score-btn" onclick="saveHighscoreToFirebase()">Speichern</button>
+            </div>
+
             <button onclick="showStartScreen()">Zurück zum Hauptmenü</button>
+        </div>
+
+        <!-- HIGHSCORE SCREEN -->
+        <div id="highscore-screen" class="card hidden">
+            <h2>Globale Highscore-Liste</h2>
+            <div style="overflow-x: auto;">
+                <table id="highscore-table" style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #ff4d4d; color: #ff8888;">
+                            <th style="padding: 8px;">Platz</th>
+                            <th style="padding: 8px;">Name</th>
+                            <th style="padding: 8px;">Score</th>
+                            <th style="padding: 8px;">Zeit</th>
+                            <th style="padding: 8px;">Fehler</th>
+                            <th style="padding: 8px;">Gefunden</th>
+                            <th style="padding: 8px;">Datum/Uhrzeit</th>
+                            <th style="padding: 8px;" class="admin-col hidden">Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody id="highscore-body"></tbody>
+                </table>
+            </div>
+            <div style="margin-top: 20px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                <button onclick="showStartScreen()">Hauptmenü</button>
+                <button onclick="toggleAdminMode()" id="admin-btn" style="background-color: #444;">Admin-Modus</button>
+            </div>
         </div>
 
     </div>
