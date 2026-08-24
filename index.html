@@ -24,9 +24,12 @@
         <div id="main-screen" class="hidden">
             <header>
                 <div id="quiz-info" class="hidden">
-                    <div>Gefunden: <span id="found-count">0</span></div>
-                    <div>Fehler: <span id="error-count">0</span></div>
-                    <div>Gesucht: <span id="target-device-name">-</span></div>
+                    <div class="stat-badge">Gefunden: <span id="found-count">0</span></div>
+                    <div class="stat-badge">Fehler: <span id="error-count">0</span></div>
+                    <div class="target-box">
+                        <span class="target-label">GESUCHT:</span>
+                        <span id="target-device-name">-</span>
+                    </div>
                 </div>
                 <button class="small-btn" onclick="showStartScreen()">Hauptmenü</button>
             </header>
@@ -54,10 +57,15 @@
                     <div id="correct-feedback" class="feedback-correct hidden">Richtig!</div>
                     <div id="wrong-feedback" class="feedback-wrong hidden"></div>
                     
+                    <!-- OK-Button nach 2 Fehlversuchen -->
+                    <div id="next-step-container" class="hidden" style="margin-top: 10px; text-align: center;">
+                        <button id="ok-btn" onclick="confirmNextDevice()">OK (Nächstes Gerät)</button>
+                    </div>
+
                     <div id="info-box" class="info-box hidden"></div>
                 </div>
 
-                <!-- Raster mit 30 Buttons im Übersichts-Modus -->
+                <!-- Raster im Übersichts-Modus -->
                 <div id="overview-grid" class="overview-grid hidden" lang="de"></div>
             </div>
         </div>
