@@ -57,8 +57,10 @@ function startTest() {
     document.getElementById("result-screen").classList.add("hidden");
     document.getElementById("main-screen").classList.remove("hidden");
     document.getElementById("quiz-info").classList.remove("hidden");
+    document.getElementById("birdseye-container").classList.remove("hidden");
     document.getElementById("overview-grid").classList.add("hidden");
     document.getElementById("info-box").classList.add("hidden");
+    document.getElementById("correct-feedback").classList.add("hidden");
     
     updateStats();
     startTime = Date.now();
@@ -102,7 +104,9 @@ function startOverview() {
     document.getElementById("result-screen").classList.add("hidden");
     document.getElementById("main-screen").classList.remove("hidden");
     document.getElementById("quiz-info").classList.add("hidden");
+    document.getElementById("birdseye-container").classList.add("hidden"); // Vogelperspektive im Übersichtsmode ausblenden
     document.getElementById("overview-grid").classList.remove("hidden");
+    document.getElementById("correct-feedback").classList.add("hidden");
     
     renderOverviewGrid();
     switchView("fahrerseite");
@@ -128,6 +132,8 @@ function selectOverviewDevice(dev, btnElement) {
     infoBox.classList.remove("hidden");
 
     activeHighlightDev = dev;
+
+    // Wechselt Bild ODER hebt direkt hervor, ohne doppeltes Klicken
     if (currentSide !== dev.side) {
         switchView(dev.side);
     } else {
@@ -191,7 +197,6 @@ function buildMap() {
     });
 }
 
-// Hilfsfunktion: Prüft, ob zwei Koordinatenbereiche sich überlappen
 function doCoordsOverlap(coordsA_str, coordsB_str) {
     const a = coordsA_str.split(',').map(Number);
     const b = coordsB_str.split(',').map(Number);
@@ -207,14 +212,15 @@ function doCoordsOverlap(coordsA_str, coordsB_str) {
 
 function handleAreaClick(clickedDev) {
     if (mode === "test") {
-        // Richtiger Bereich, wenn gleiches Gerät ODER Überlappung am selben Fahrzeugbereich
         const isCorrectArea = (clickedDev.side === currentTarget.side && doCoordsOverlap(clickedDev.coords, currentTarget.coords)) 
                               || clickedDev.id === currentTarget.id;
 
         if (isCorrectArea) {
             foundCount++;
             updateStats();
-            alert("Richtig gefunden!");
+            
+            // Kein Alert / Popup bei Richtig, sondern direktes Feedback
+            showCorrectFeedback();
             nextTestDevice();
         } else {
             errorCount++;
@@ -222,16 +228,12 @@ function handleAreaClick(clickedDev) {
             updateStats();
             
             if (deviceAttempts < 2) {
+                // Erster Fehler: Pop-Up
                 alert("Falsch! Du hast noch 1 Versuch.");
             } else {
+                // Zweiter Fehler: Pop-Up mit Position und sofort das nächste Gerät
                 alert(`Leider falsch. Das gesuchte Gerät befindet sich hier: ${currentTarget.text}`);
-                activeHighlightDev = currentTarget;
-                if (currentTarget.side !== currentSide) {
-                    switchView(currentTarget.side);
-                } else {
-                    highlightDevice(currentTarget);
-                }
-                setTimeout(nextTestDevice, 3500);
+                nextTestDevice();
             }
         }
     } else if (mode === "overview") {
@@ -241,6 +243,14 @@ function handleAreaClick(clickedDev) {
         activeHighlightDev = clickedDev;
         highlightDevice(clickedDev);
     }
+}
+
+function showCorrectFeedback() {
+    const fb = document.getElementById("correct-feedback");
+    fb.classList.remove("hidden");
+    setTimeout(() => {
+        fb.classList.add("hidden");
+    }, 1000);
 }
 
 function highlightDevice(dev) {
@@ -261,15 +271,10 @@ function highlightDevice(dev) {
     const x2 = Math.max(coords[0], coords[2]) * scaleX;
     const y2 = Math.max(coords[1], coords[3]) * scaleY;
 
-    const left = x1;
-    const top = y1;
-    const width = x2 - x1;
-    const height = y2 - y1;
-
-    overlay.style.left = `${left}px`;
-    overlay.style.top = `${top}px`;
-    overlay.style.width = `${width}px`;
-    overlay.style.height = `${height}px`;
+    overlay.style.left = `${x1}px`;
+    overlay.style.top = `${y1}px`;
+    overlay.style.width = `${x2 - x1}px`;
+    overlay.style.height = `${y2 - y1}px`;
     overlay.style.display = "block";
 }
 
