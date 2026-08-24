@@ -39,6 +39,7 @@ let foundCount = 0;
 let errorCount = 0;
 let deviceAttempts = 0;
 let startTime = 0;
+let activeHighlightDev = null; // Speichert das aktuell hervorgehobene Gerät
 
 function showStartScreen() {
     document.getElementById("start-screen").classList.remove("hidden");
@@ -122,33 +123,45 @@ function selectOverviewDevice(dev, btnElement) {
     document.querySelectorAll(".overview-grid button").forEach(b => b.classList.remove("active"));
     btnElement.classList.add("active");
     
-    switchView(dev.side);
-    
     const infoBox = document.getElementById("info-box");
     infoBox.innerText = `${dev.name}: ${dev.text}`;
     infoBox.classList.remove("hidden");
 
-    highlightDevice(dev);
+    activeHighlightDev = dev;
+    switchView(dev.side);
 }
 
 function switchView(side) {
     currentSide = side;
     const img = document.getElementById("vehicle-img");
     
-    // Unterscheidung der Dateiendungen je nach Bild
+    document.getElementById("view-title").innerText = side.toUpperCase();
+    hideHighlight();
+
+    // Funktion wird ausgeführt, wenn das Bild VOLLSTÄNDIG geladen ist
+    img.onload = () => {
+        buildMap();
+        
+        // Verfasser der Map Resizer Bibliothek aufrufen
+        if (typeof window.imageMapResize === "function") {
+            window.imageMapResize();
+        }
+
+        // Falls ein Highlight gewollt ist (z.B. nach Klick im Übersichts-Modus), erst jetzt berechnen!
+        if (activeHighlightDev && activeHighlightDev.side === currentSide) {
+            // Ein minimaler Timeout stellt sicher, dass das Layout im Browser gerendert wurde
+            setTimeout(() => {
+                highlightDevice(activeHighlightDev);
+            }, 50);
+        }
+    };
+
+    // Bildquelle erst NACH der Onload-Definition setzen!
     if (side === "mannschaftskabine") {
         img.src = `./img/${side}.jpg`;
     } else {
         img.src = `./img/${side}.jpeg`;
     }
-    
-    document.getElementById("view-title").innerText = side.toUpperCase();
-    hideHighlight();
-
-    img.onload = () => {
-        buildMap();
-        if (typeof imageMapResize === "function") imageMapResize();
-    };
 }
 
 function buildMap() {
@@ -160,6 +173,7 @@ function buildMap() {
     sideDevices.forEach(dev => {
         const area = document.createElement("area");
         area.shape = "rect";
+        // Originalkoordinaten zuweisen
         area.coords = dev.coords;
         area.href = "javascript:void(0);";
         area.onclick = () => handleAreaClick(dev);
@@ -183,8 +197,8 @@ function handleAreaClick(clickedDev) {
                 alert("Falsch! Du hast noch 1 Versuch.");
             } else {
                 alert(`Leider falsch. Das gesuchte Gerät befindet sich hier: ${currentTarget.text}`);
+                activeHighlightDev = currentTarget;
                 switchView(currentTarget.side);
-                highlightDevice(currentTarget);
                 setTimeout(nextTestDevice, 3000);
             }
         }
@@ -192,16 +206,20 @@ function handleAreaClick(clickedDev) {
         const infoBox = document.getElementById("info-box");
         infoBox.innerText = `${clickedDev.name}: ${clickedDev.text}`;
         infoBox.classList.remove("hidden");
+        activeHighlightDev = clickedDev;
         highlightDevice(clickedDev);
     }
 }
 
 function highlightDevice(dev) {
-    if (dev.side !== currentSide) return;
+    if (!dev || dev.side !== currentSide) return;
 
     const img = document.getElementById("vehicle-img");
     const overlay = document.getElementById("highlight-overlay");
     
+    // Vermeide Berechnungen, wenn das Bild noch nicht angezeigt wird
+    if (!img.clientWidth || !img.naturalWidth) return;
+
     const coords = dev.coords.split(',').map(Number);
     
     const scaleX = img.clientWidth / img.naturalWidth;
@@ -225,5 +243,13 @@ function highlightDevice(dev) {
 }
 
 function hideHighlight() {
+    activeHighlightDev = null;
     document.getElementById("highlight-overlay").style.display = "none";
 }
+
+// Bei Fenstergrößenänderung (Resize) die Hervorhebung neu ausrichten
+window.addEventListener('resize', () => {
+    if (activeHighlightDev) {
+        highlightDevice(activeHighlightDev);
+    }
+});
