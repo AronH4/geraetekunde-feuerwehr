@@ -147,13 +147,13 @@ function switchView(side) {
 
     img.onload = updateViewContent;
 
-    if (side === "mannschaftskabine") {
+    // Unterscheidung der Dateiendungen je nach Bild
+    if (side === "mannschaftskabine" || side === "vogelperspektive") {
         img.src = `./img/${side}.jpg`;
     } else {
         img.src = `./img/${side}.jpeg`;
     }
 
-    // Wenn das Bild schon gekapselt im Cache liegt
     if (img.complete && img.naturalWidth !== 0) {
         updateViewContent();
     }
@@ -171,7 +171,6 @@ function buildMap() {
     sideDevices.forEach(dev => {
         const raw = dev.coords.split(',').map(Number);
         
-        // Exakte Neuberechnung auf die aktuelle Anzeigegröße des Bildes
         const scaleX = img.clientWidth / img.naturalWidth;
         const scaleY = img.clientHeight / img.naturalHeight;
 
@@ -191,7 +190,11 @@ function buildMap() {
 
 function handleAreaClick(clickedDev) {
     if (mode === "test") {
-        if (clickedDev.id === currentTarget.id) {
+        // Prüfen, ob das gesuchte Gerät DIESELBE Position/Koordinaten hat wie das angeklickte Feld
+        const isCorrectArea = (clickedDev.side === currentTarget.side && clickedDev.coords === currentTarget.coords) 
+                              || clickedDev.id === currentTarget.id;
+
+        if (isCorrectArea) {
             foundCount++;
             updateStats();
             alert("Richtig gefunden!");
@@ -258,7 +261,6 @@ function hideHighlight() {
     document.getElementById("highlight-overlay").style.display = "none";
 }
 
-// Bei Fenstergrößenänderung (Resize) Klickfelder und Rahmen unverzüglich anpassen
 window.addEventListener('resize', () => {
     buildMap();
     if (activeHighlightDev) {
