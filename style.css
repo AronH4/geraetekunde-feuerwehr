@@ -125,23 +125,48 @@ header {
     padding: 0;
     margin: 0;
     box-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+    z-index: 10;
 }
 
 .nav-btn:hover {
     background: #ff4d4d;
-    transform: scale(1.15);
 }
 
-/* Fixierte Positionen der Kreise */
-.btn-top { top: 15px; left: 50%; transform: translateX(-50%); }
-.btn-bottom { bottom: 15px; left: 50%; transform: translateX(-50%); }
-.btn-left { left: 15px; top: 50%; transform: translateY(-50%); }
-.btn-right { right: 15px; top: 50%; transform: translateY(-50%); }
+/* Exakte Positionen gemäß Skizze */
+.btn-kabine { 
+    top: 25%; 
+    left: 10%; 
+}
 
-.btn-top:hover { transform: translateX(-50%) scale(1.15); }
-.btn-bottom:hover { transform: translateX(-50%) scale(1.15); }
-.btn-left:hover { transform: translateY(-50%) scale(1.15); }
-.btn-right:hover { transform: translateY(-50%) scale(1.15); }
+.btn-fahrerseite { 
+    bottom: 25%; 
+    left: 10%; 
+}
+
+.btn-beifahrerseite { 
+    top: 50%; 
+    right: 10%; 
+    transform: translateY(-50%); 
+}
+
+.btn-heck { 
+    bottom: 5%; 
+    left: 50%; 
+    transform: translateX(-50%); 
+}
+
+/* Hover-Skalierung für die Kreise */
+.btn-kabine:hover, .btn-fahrerseite:hover { 
+    transform: scale(1.15); 
+}
+
+.btn-beifahrerseite:hover { 
+    transform: translateY(-50%) scale(1.15); 
+}
+
+.btn-heck:hover { 
+    transform: translateX(-50%) scale(1.15); 
+}
 
 /* Fahrzeuganzeige (Links positioniert) */
 .view-wrapper { 
@@ -234,7 +259,7 @@ map area {
 .overview-grid button {
     background: #2a2a2a;
     color: #ddd;
-    height: 55px; /* Feste, einheitliche Höhe */
+    height: 55px;
     padding: 4px;
     border: 1px solid #444;
     border-radius: 6px;
@@ -243,8 +268,6 @@ map area {
     align-items: center;
     justify-content: center;
     text-align: center;
-    
-    /* Automatische Skalierung für langen Text */
     font-size: clamp(0.65rem, 1vw, 0.85rem);
     line-height: 1.1;
     word-break: break-word;
