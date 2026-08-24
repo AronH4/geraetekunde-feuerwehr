@@ -39,14 +39,14 @@ const devices = [
     { id: 20, name: "Übergangsstück A-B", side: "heck", text: "Rückseite | oben rechts von der Pumpe", coords: "1209,479,1451,608" },
     { id: 21, name: "Übergangsstück B-C", side: "beifahrerseite", text: "BF-Seite hinten | oberhalb vom Verteiler", coords: "568,1205,455,1149" },
     { id: 22, name: "Verbandskasten", side: "mannschaftskabine", text: "Kabine hinten | an der Rückwand", coords: "1791,741,1961,1121" },
-    { id: 23, name: "Brechstange/Halligan Tool", side: "fahrerseite", text: "F-Seite vorne | ziemlich links am Rand", coords: "389,711,248,577" },
+    { id: 23, name: "Brechstange (Halligan Tool)", side: "fahrerseite", text: "F-Seite vorne | ziemlich links am Rand", coords: "389,711,248,577" },
     { id: 24, name: "Feuerwehraxt", side: "fahrerseite", text: "F-Seite vorne | unten links", coords: "390,1118,251,948" },
     { id: 25, name: "Reservekraftstoffkanister", side: "fahrerseite", text: "F-Seite hinten | mittig oben", coords: "1589,476,1486,302" },
     { id: 26, name: "Unterlegkeil", side: "mannschaftskabine", text: "Kabine vorne | unter Fahrersitz", coords: "446,1032,685,1219" },
     { id: 27, name: "Werkzeugkasten", side: "beifahrerseite", text: "BF-Seite vorne | oben neben den Schläuchen", coords: "1442,663,1287,469" },
     { id: 28, name: "Warndreieck", side: "beifahrerseite", text: "BF-Seite hinten | rechts am Rahmen", coords: "852,835,768,715" },
     { id: 29, name: "Warnweste", side: "mannschaftskabine", text: "Kabine hinten | unter den Sitzen", coords: "1300,833,1614,1423" },
-    { id: 30, name: "Warn-/Sicherungsleuchte", side: "beifahrerseite", text: "BF-Seite hinten | unten rechts im Korb", coords: "841,1046,586,834" }
+    { id: 30, name: "Warnleuchte", side: "beifahrerseite", text: "BF-Seite hinten | unten rechts im Korb", coords: "841,1046,586,834" }
 ];
 
 let mode = "";
