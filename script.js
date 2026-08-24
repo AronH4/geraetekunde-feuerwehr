@@ -1,34 +1,51 @@
+// 1. FIREBASE KONFIGURATION (Hier deine Daten eintragen!)
+const firebaseConfig = {
+    apiKey: "DEIN_API_KEY",
+    authDomain: "DEIN_PROJEKT.firebaseapp.com",
+    projectId: "DEIN_PROJEKT_ID",
+    storageBucket: "DEIN_PROJEKT.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abc123def"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Admin-PIN für das Löschen festlegen
+const ADMIN_PIN = "1122"; 
+let isAdmin = false;
+
 const devices = [
-    { id: 1, name: "B-Strahlrohr", side: "fahrerseite", text: "Fahrerseite | hinten | mittig", coords: "1788,660,1693,477" },
-    { id: 2, name: "C-Strahlrohr", side: "fahrerseite", text: "Fahrerseite | hinten | mittig", coords: "1686,655,1394,478" },
-    { id: 3, name: "Druckbegrenzungsventil", side: "heck", text: "Heck | in der Maschinistenkiste", coords: "608,73,1354,487" },
-    { id: 4, name: "Feuerlöscher", side: "beifahrerseite", text: "Beifahrerseite | vorne | hinter der Kübelspritze", coords: "1419,1205,1266,810" },
-    { id: 5, name: "Feuerwehrleine", side: "mannschaftskabine", text: "Mannschaftskabine | bei den AGT-Sitzen", coords: "1020,631,1285,1136" },
-    { id: 6, name: "Handscheinwerfer", side: "mannschaftskabine", text: "Fahrerkabine | zwischen den Sitzen", coords: "737,643,911,777" },
-    { id: 7, name: "Kübelspritze", side: "beifahrerseite", text: "Beifahrerseite | vorne | mittig unten", coords: "1459,1203,1305,762" },
-    { id: 8, name: "Kupplungsschlüssel", side: "heck", text: "Heck | in der Maschinistenkiste", coords: "608,73,1354,487" },
-    { id: 9, name: "Mehrzweckleine", side: "heck", text: "Heck | in der Maschinistenkiste", coords: "608,73,1354,487" },
-    { id: 10, name: "Sammelstück", side: "heck", text: "Heck | oben links", coords: "510,477,795,787" },
-    { id: 11, name: "Saugkorb", side: "heck", text: "Heck | in der Maschinistenkiste", coords: "608,73,1354,487" },
-    { id: 12, name: "Saugschutzkorb", side: "heck", text: "Heck | in der Maschinistenkiste", coords: "608,73,1354,487" },
-    { id: 13, name: "Schachthaken", side: "beifahrerseite", text: "Beifahrerseite | hinten | links", coords: "210,939,121,774" },
-    { id: 14, name: "Schlauchhalter", side: "fahrerseite", text: "Fahrerseite | vorne | oben links in der Beleuchtungskiste", coords: "260,578,150,442" },
-    { id: 15, name: "Standrohr", side: "beifahrerseite", text: "Beifahrerseite | hinten | unterhalb der Schläuche", coords: "719,758,496,643" },
-    { id: 16, name: "Stützkrümmer", side: "fahrerseite", text: "Fahrerseite | hinten | mittig oben", coords: "1695,475,1589,328" },
-    { id: 17, name: "Überflurhydrantenschlüssel", side: "beifahrerseite", text: "Beifahrerseite | hinten | links von den Leitkegeln", coords: "365,1031,240,939" },
-    { id: 18, name: "Verteiler", side: "beifahrerseite", text: "Beifahrerseite | hinten | unten links", coords: "511,1368,250,1212" },
-    { id: 19, name: "Unterflurhydrantenschlüssel", side: "beifahrerseite", text: "Beifahrerseite | hinten | unterhalb des Standrohres", coords: "772,812,455,741" },
-    { id: 20, name: "Übergangsstück A-B", side: "heck", text: "Heck | oben rechts", coords: "1209,479,1451,608" },
-    { id: 21, name: "Übergangsstück B-C", side: "beifahrerseite", text: "Beifahrerseite | hinten | oberhalb vom Verteiler", coords: "568,1205,455,1149" },
-    { id: 22, name: "Verbandskasten", side: "mannschaftskabine", text: "Mannschaftskabine | an der Rückwand", coords: "1791,741,1961,1121" },
-    { id: 23, name: "Brechstange (Halligan Tool)", side: "fahrerseite", text: "Fahrerseite | vorne | mittig links", coords: "389,711,248,577" },
-    { id: 24, name: "Feuerwehraxt", side: "fahrerseite", text: "Fahrerseite | vorne | unten links", coords: "390,1118,251,948" },
-    { id: 25, name: "Reservekraftstoffkanister", side: "fahrerseite", text: "Fahrerseite | hinten | mittig oben", coords: "1589,476,1486,302" },
-    { id: 26, name: "Unterlegkeil", side: "mannschaftskabine", text: "Fahrerkabine | unter dem Fahrersitz", coords: "446,1032,685,1219" },
-    { id: 27, name: "Werkzeugkasten", side: "beifahrerseite", text: "Beifahrerseite | vorne | rechts neben den Schläuchen", coords: "1442,663,1287,469" },
-    { id: 28, name: "Warndreieck", side: "beifahrerseite", text: "Beifahrerseite | hinten | rechts unterhalb vom Standrohr", coords: "852,835,768,715" },
-    { id: 29, name: "Warnweste", side: "mannschaftskabine", text: "Mannschaftskabine | in der Sitzbank", coords: "1300,833,1614,1423" },
-    { id: 30, name: "Warnleuchte", side: "beifahrerseite", text: "Beifahrerseite | hinten | in der Kiste rechts neben den Leitkegeln", coords: "841,1046,586,834" }
+    { id: 1, name: "B-Strahlrohr", side: "fahrerseite", text: "F-Seite hinten | mittig", coords: "1788,660,1693,477" },
+    { id: 2, name: "C-Strahlrohr", side: "fahrerseite", text: "F-Seite hinten | mittig", coords: "1686,655,1394,478" },
+    { id: 3, name: "Druckbegrenzungsventil", side: "heck", text: "Rückseite | im Maschinistenkorb", coords: "608,73,1354,487" },
+    { id: 4, name: "Feuerlöscher", side: "beifahrerseite", text: "BF-Seite vorne | hinter der Kübelspritze", coords: "1419,1205,1266,810" },
+    { id: 5, name: "Feuerwehrleine", side: "mannschaftskabine", text: "Kabine hinten | bei den ATGs", coords: "1020,631,1285,1136" },
+    { id: 6, name: "Handscheinwerfer", side: "mannschaftskabine", text: "Kabine vorne | zwischen den Sitzen", coords: "737,643,911,777" },
+    { id: 7, name: "Kübelspritze", side: "beifahrerseite", text: "BF-Seite vorne | mittig unten", coords: "1459,1203,1305,762" },
+    { id: 8, name: "Kupplungsschlüssel", side: "heck", text: "Rückseite | im Maschinistenkorb", coords: "608,73,1354,487" },
+    { id: 9, name: "Mehrzweckleine", side: "heck", text: "Rückseite | im Maschinistenkorb (rot)", coords: "608,73,1354,487" },
+    { id: 10, name: "Sammelstück", side: "heck", text: "Rückseite | oben links von der Pumpe", coords: "510,477,795,787" },
+    { id: 11, name: "Saugkorb", side: "heck", text: "Rückseite | im Maschinistenkorb", coords: "608,73,1354,487" },
+    { id: 12, name: "Saugschutzkorb", side: "heck", text: "Rückseite | im Maschinistenkorb", coords: "608,73,1354,487" },
+    { id: 13, name: "Schachthaken", side: "beifahrerseite", text: "BF-Seite hinten | links am Rand", coords: "210,939,121,774" },
+    { id: 14, name: "Schlauchhalter", side: "fahrerseite", text: "F-Seite vorne | oben links bei Beleuchtung", coords: "260,578,150,442" },
+    { id: 15, name: "Standrohr", side: "beifahrerseite", text: "BF-Seite hinten | unterhalb der Schläuche", coords: "719,758,496,643" },
+    { id: 16, name: "Stützkrümmer", side: "fahrerseite", text: "F-Seite hinten | mittig oben", coords: "1695,475,1589,328" },
+    { id: 17, name: "Überflurhydrantenschlüssel", side: "beifahrerseite", text: "BF-Seite hinten | links von den Leitkegeln", coords: "365,1031,240,939" },
+    { id: 18, name: "Verteiler", side: "beifahrerseite", text: "BF-Seite hinten | unten links", coords: "511,1368,250,1212" },
+    { id: 19, name: "Unterflurhydrantenschlüssel", side: "beifahrerseite", text: "BF-Seite hinten | unterhalb des Standrohres", coords: "772,812,455,741" },
+    { id: 20, name: "Übergangsstück A-B", side: "heck", text: "Rückseite | oben rechts von der Pumpe", coords: "1209,479,1451,608" },
+    { id: 21, name: "Übergangsstück B-C", side: "beifahrerseite", text: "BF-Seite hinten | oberhalb vom Verteiler", coords: "568,1205,455,1149" },
+    { id: 22, name: "Verbandskasten", side: "mannschaftskabine", text: "Kabine hinten | an der Rückwand", coords: "1791,741,1961,1121" },
+    { id: 23, name: "Brechstange/Halligan Tool", side: "fahrerseite", text: "F-Seite vorne | ziemlich links am Rand", coords: "389,711,248,577" },
+    { id: 24, name: "Feuerwehraxt", side: "fahrerseite", text: "F-Seite vorne | unten links", coords: "390,1118,251,948" },
+    { id: 25, name: "Reservekraftstoffkanister", side: "fahrerseite", text: "F-Seite hinten | mittig oben", coords: "1589,476,1486,302" },
+    { id: 26, name: "Unterlegkeil", side: "mannschaftskabine", text: "Kabine vorne | unter Fahrersitz", coords: "446,1032,685,1219" },
+    { id: 27, name: "Werkzeugkasten", side: "beifahrerseite", text: "BF-Seite vorne | oben neben den Schläuchen", coords: "1442,663,1287,469" },
+    { id: 28, name: "Warndreieck", side: "beifahrerseite", text: "BF-Seite hinten | rechts am Rahmen", coords: "852,835,768,715" },
+    { id: 29, name: "Warnweste", side: "mannschaftskabine", text: "Kabine hinten | unter den Sitzen", coords: "1300,833,1614,1423" },
+    { id: 30, name: "Warn-/Sicherungsleuchte", side: "beifahrerseite", text: "BF-Seite hinten | unten rechts im Korb", coords: "841,1046,586,834" }
 ];
 
 let mode = "";
@@ -42,6 +59,9 @@ let startTime = 0;
 let activeHighlightDev = null;
 let feedbackTimeout = null;
 let isWaitingForOk = false;
+let totalDevicesCount = 0;
+let finalScore = 0;
+let finalDurationSec = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
     const imgElement = document.getElementById("vehicle-img");
@@ -58,6 +78,7 @@ function showStartScreen() {
     document.getElementById("start-screen").classList.remove("hidden");
     document.getElementById("main-screen").classList.add("hidden");
     document.getElementById("result-screen").classList.add("hidden");
+    document.getElementById("highscore-screen").classList.add("hidden");
 }
 
 function startTest() {
@@ -65,9 +86,11 @@ function startTest() {
     foundCount = 0;
     errorCount = 0;
     currentQueue = [...devices].sort(() => Math.random() - 0.5);
+    totalDevicesCount = currentQueue.length;
     
     document.getElementById("start-screen").classList.add("hidden");
     document.getElementById("result-screen").classList.add("hidden");
+    document.getElementById("highscore-screen").classList.add("hidden");
     document.getElementById("main-screen").classList.remove("hidden");
     document.getElementById("quiz-info").classList.remove("hidden");
     document.getElementById("birdseye-container").classList.remove("hidden");
@@ -98,16 +121,125 @@ function nextTestDevice() {
 }
 
 function finishTest() {
-    const durationSec = Math.floor((Date.now() - startTime) / 1000);
-    const min = Math.floor(durationSec / 60);
-    const sec = durationSec % 60;
+    finalDurationSec = Math.floor((Date.now() - startTime) / 1000);
+    const min = Math.floor(finalDurationSec / 60);
+    const sec = finalDurationSec % 60;
     
+    // Score-Berechnung: Zeit + 5s je Fehler + 5s je nicht gefundenem Gerät
+    const unassignedCount = totalDevicesCount - foundCount;
+    finalScore = finalDurationSec + (errorCount * 5) + (unassignedCount * 5);
+
     document.getElementById("main-screen").classList.add("hidden");
     document.getElementById("result-screen").classList.remove("hidden");
     
-    document.getElementById("res-found").innerText = foundCount;
+    document.getElementById("res-found").innerText = `${foundCount}/${totalDevicesCount}`;
     document.getElementById("res-errors").innerText = errorCount;
     document.getElementById("res-time").innerText = `${min}m ${sec}s`;
+    document.getElementById("res-score").innerText = finalScore;
+    
+    document.getElementById("highscore-form-container").classList.remove("hidden");
+    document.getElementById("save-score-btn").disabled = false;
+}
+
+function saveHighscoreToFirebase() {
+    const nameInput = document.getElementById("player-name");
+    const name = nameInput.value.trim() || "Anonym";
+    
+    const min = Math.floor(finalDurationSec / 60);
+    const sec = finalDurationSec % 60;
+    const timeFormatted = `${min}m ${sec}s`;
+    
+    const now = new Date();
+    const dateTimeFormatted = now.toLocaleDateString('de-DE') + ' ' + now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+
+    document.getElementById("save-score-btn").disabled = true;
+
+    db.collection("highscores").add({
+        name: name,
+        score: finalScore,
+        time: timeFormatted,
+        errors: errorCount,
+        found: `${foundCount}/${totalDevicesCount}`,
+        date: dateTimeFormatted,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        nameInput.value = "";
+        showHighscoreScreen();
+    }).catch(error => {
+        alert("Fehler beim Speichern: " + error.message);
+        document.getElementById("save-score-btn").disabled = false;
+    });
+}
+
+function showHighscoreScreen() {
+    document.getElementById("start-screen").classList.add("hidden");
+    document.getElementById("main-screen").classList.add("hidden");
+    document.getElementById("result-screen").classList.add("hidden");
+    document.getElementById("highscore-screen").classList.remove("hidden");
+
+    loadHighscoresLive();
+}
+
+function loadHighscoresLive() {
+    db.collection("highscores")
+      .orderBy("score", "asc")
+      .limit(20)
+      .onSnapshot(snapshot => {
+          const tbody = document.getElementById("highscore-body");
+          tbody.innerHTML = "";
+
+          if (snapshot.empty) {
+              tbody.innerHTML = `<tr><td colspan="8" style="padding: 15px; color: #aaa;">Noch keine Highscores vorhanden.</td></tr>`;
+              return;
+          }
+
+          let rank = 1;
+          snapshot.forEach(doc => {
+              const data = doc.data();
+              const row = document.createElement("tr");
+              row.style.borderBottom = "1px solid #333";
+              
+              row.innerHTML = `
+                  <td style="padding: 8px; font-weight: bold; color: #ffea00;">#${rank++}</td>
+                  <td style="padding: 8px;">${escapeHtml(data.name)}</td>
+                  <td style="padding: 8px; font-weight: bold; color: #ff4d4d;">${data.score}</td>
+                  <td style="padding: 8px;">${data.time}</td>
+                  <td style="padding: 8px;">${data.errors}</td>
+                  <td style="padding: 8px;">${data.found}</td>
+                  <td style="padding: 8px; font-size: 0.85rem; color: #aaa;">${data.date || '-'}</td>
+                  <td style="padding: 8px;" class="admin-col ${isAdmin ? '' : 'hidden'}">
+                      <button onclick="deleteEntry('${doc.id}')" style="background: #d90429; padding: 2px 8px; font-size: 0.75rem; margin:0;">Löschen</button>
+                  </td>
+              `;
+              tbody.appendChild(row);
+          });
+      });
+}
+
+function deleteEntry(docId) {
+    if (confirm("Diesen Eintrag wirklich löschen?")) {
+        db.collection("highscores").doc(docId).delete()
+          .catch(err => alert("Löschen fehlgeschlagen: " + err.message));
+    }
+}
+
+function toggleAdminMode() {
+    if (!isAdmin) {
+        const pin = prompt("Bitte Admin-PIN eingeben:");
+        if (pin === ADMIN_PIN) {
+            isAdmin = true;
+            document.getElementById("admin-btn").innerText = "Admin beenden";
+            document.getElementById("admin-btn").style.backgroundColor = "#d90429";
+            document.querySelectorAll(".admin-col").forEach(el => el.classList.remove("hidden"));
+        } else if (pin !== null) {
+            alert("Falsche PIN!");
+        }
+    } else {
+        isAdmin = false;
+        document.getElementById("admin-btn").innerText = "Admin-Modus";
+        document.getElementById("admin-btn").style.backgroundColor = "#444";
+        document.querySelectorAll(".admin-col").forEach(el => el.classList.add("hidden"));
+    }
 }
 
 function updateStats() {
@@ -119,6 +251,7 @@ function startOverview() {
     mode = "overview";
     document.getElementById("start-screen").classList.add("hidden");
     document.getElementById("result-screen").classList.add("hidden");
+    document.getElementById("highscore-screen").classList.add("hidden");
     document.getElementById("main-screen").classList.remove("hidden");
     document.getElementById("quiz-info").classList.add("hidden");
     document.getElementById("birdseye-container").classList.add("hidden");
@@ -274,7 +407,6 @@ function registerError() {
         isWaitingForOk = true;
         showFeedback("wrong", `Falsch! Lösung: ${currentTarget.text}`, 999999);
         
-        // Zur richtigen Fahrzeugseite wechseln & blinken lassen
         activeHighlightDev = currentTarget;
         if (currentSide !== currentTarget.side) {
             switchView(currentTarget.side, () => {
@@ -284,7 +416,6 @@ function registerError() {
             highlightDevice(currentTarget);
         }
         
-        // OK-Button einblenden
         document.getElementById("next-step-container").classList.remove("hidden");
     }
 }
@@ -342,6 +473,10 @@ function hideHighlight() {
     activeHighlightDev = null;
     const overlay = document.getElementById("highlight-overlay");
     if (overlay) overlay.style.display = "none";
+}
+
+function escapeHtml(str) {
+    return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 window.addEventListener('resize', () => {
