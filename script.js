@@ -157,7 +157,9 @@ function switchView(side) {
 
     img.onload = updateViewContent;
 
-    if (side === "mannschaftskabine" || side === "vogelperspektive") {
+    if (side === "vogelperspektive") {
+        img.src = `./img/${side}.png`;
+    } else if (side === "mannschaftskabine") {
         img.src = `./img/${side}.jpg`;
     } else {
         img.src = `./img/${side}.jpeg`;
