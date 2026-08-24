@@ -81,20 +81,17 @@ function showStartScreen() {
     document.getElementById("result-screen").classList.add("hidden");
     document.getElementById("highscore-screen").classList.add("hidden");
     
-    // Test-Start-Overlay zurücksetzen
+    // Die Prep-Box beim Laden des Hauptmenüs IMMER verstecken
     const testPrep = document.getElementById("test-prep-box");
-    if (testPrep) testPrep.classList.remove("hidden");
+    if (testPrep) testPrep.classList.add("hidden");
 }
 
-// 1. ZWISCHENSEITE: Zeigt die Start-Box
+// 1. ZWISCHENSEITE: Wird NUR beim Klick auf den "Test"-Button eingeblendet
 function openTestPrep() {
-    showStartScreen();
-    // Falls du in der HTML ein Element #test-prep-box hast, kannst du es hier anzeigen lassen
     const prepBox = document.getElementById("test-prep-box");
     if (prepBox) {
         prepBox.classList.remove("hidden");
     } else {
-        // Fallback: Direkter Start, falls das HTML noch kein Prep-Box Element hat
         startTest();
     }
 }
