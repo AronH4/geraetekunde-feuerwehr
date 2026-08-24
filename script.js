@@ -128,7 +128,11 @@ function selectOverviewDevice(dev, btnElement) {
     infoBox.classList.remove("hidden");
 
     activeHighlightDev = dev;
-    switchView(dev.side);
+    if (currentSide !== dev.side) {
+        switchView(dev.side);
+    } else {
+        highlightDevice(dev);
+    }
 }
 
 function switchView(side) {
@@ -147,7 +151,6 @@ function switchView(side) {
 
     img.onload = updateViewContent;
 
-    // Unterscheidung der Dateiendungen je nach Bild
     if (side === "mannschaftskabine" || side === "vogelperspektive") {
         img.src = `./img/${side}.jpg`;
     } else {
@@ -174,10 +177,10 @@ function buildMap() {
         const scaleX = img.clientWidth / img.naturalWidth;
         const scaleY = img.clientHeight / img.naturalHeight;
 
-        const x1 = Math.round(raw[0] * scaleX);
-        const y1 = Math.round(raw[1] * scaleY);
-        const x2 = Math.round(raw[2] * scaleX);
-        const y2 = Math.round(raw[3] * scaleY);
+        const x1 = Math.round(Math.min(raw[0], raw[2]) * scaleX);
+        const y1 = Math.round(Math.min(raw[1], raw[3]) * scaleY);
+        const x2 = Math.round(Math.max(raw[0], raw[2]) * scaleX);
+        const y2 = Math.round(Math.max(raw[1], raw[3]) * scaleY);
 
         const area = document.createElement("area");
         area.shape = "rect";
@@ -188,10 +191,24 @@ function buildMap() {
     });
 }
 
+// Hilfsfunktion: Prüft, ob zwei Koordinatenbereiche sich überlappen
+function doCoordsOverlap(coordsA_str, coordsB_str) {
+    const a = coordsA_str.split(',').map(Number);
+    const b = coordsB_str.split(',').map(Number);
+    
+    const ax1 = Math.min(a[0], a[2]), ax2 = Math.max(a[0], a[2]);
+    const ay1 = Math.min(a[1], a[3]), ay2 = Math.max(a[1], a[3]);
+    
+    const bx1 = Math.min(b[0], b[2]), bx2 = Math.max(b[0], b[2]);
+    const by1 = Math.min(b[1], b[3]), by2 = Math.max(b[1], b[3]);
+
+    return !(ax2 < bx1 || ax1 > bx2 || ay2 < by1 || ay1 > by2);
+}
+
 function handleAreaClick(clickedDev) {
     if (mode === "test") {
-        // Prüfen, ob das gesuchte Gerät DIESELBE Position/Koordinaten hat wie das angeklickte Feld
-        const isCorrectArea = (clickedDev.side === currentTarget.side && clickedDev.coords === currentTarget.coords) 
+        // Richtiger Bereich, wenn gleiches Gerät ODER Überlappung am selben Fahrzeugbereich
+        const isCorrectArea = (clickedDev.side === currentTarget.side && doCoordsOverlap(clickedDev.coords, currentTarget.coords)) 
                               || clickedDev.id === currentTarget.id;
 
         if (isCorrectArea) {
@@ -239,15 +256,15 @@ function highlightDevice(dev) {
     const scaleX = img.clientWidth / img.naturalWidth;
     const scaleY = img.clientHeight / img.naturalHeight;
 
-    const x1 = coords[0] * scaleX;
-    const y1 = coords[1] * scaleY;
-    const x2 = coords[2] * scaleX;
-    const y2 = coords[3] * scaleY;
+    const x1 = Math.min(coords[0], coords[2]) * scaleX;
+    const y1 = Math.min(coords[1], coords[3]) * scaleY;
+    const x2 = Math.max(coords[0], coords[2]) * scaleX;
+    const y2 = Math.max(coords[1], coords[3]) * scaleY;
 
-    const left = Math.min(x1, x2);
-    const top = Math.min(y1, y2);
-    const width = Math.abs(x2 - x1);
-    const height = Math.abs(y2 - y1);
+    const left = x1;
+    const top = y1;
+    const width = x2 - x1;
+    const height = y2 - y1;
 
     overlay.style.left = `${left}px`;
     overlay.style.top = `${top}px`;
@@ -258,7 +275,8 @@ function highlightDevice(dev) {
 
 function hideHighlight() {
     activeHighlightDev = null;
-    document.getElementById("highlight-overlay").style.display = "none";
+    const overlay = document.getElementById("highlight-overlay");
+    if (overlay) overlay.style.display = "none";
 }
 
 window.addEventListener('resize', () => {
